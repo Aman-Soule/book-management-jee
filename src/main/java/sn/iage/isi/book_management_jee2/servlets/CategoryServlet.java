@@ -1,5 +1,6 @@
 package sn.iage.isi.book_management_jee2.servlets;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,10 +32,10 @@ public class CategoryServlet extends HttpServlet {
             // /categories/{id}/edit
             if (parts.length == 3 && parts[2].equals("edit")) {
                 int id = Integer.parseInt(parts[1]);
-                Category category = repository.findById(id);
-                if (category != null) {
+                try {
+                    Category category = repository.getById(id);
                     showForm(req, resp, category);
-                } else {
+                } catch (EntityNotFoundException e) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } else {
@@ -59,7 +60,12 @@ public class CategoryServlet extends HttpServlet {
                         updateCategory(req, resp, id);
                         break;
                     case "delete":
-                        repository.delete(id);
+                        try {
+                            repository.delete(id);
+                        } catch (EntityNotFoundException e) {
+                            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                            return;
+                        }
                         resp.sendRedirect(req.getContextPath() + "/categories");
                         break;
                     default:
@@ -73,7 +79,7 @@ public class CategoryServlet extends HttpServlet {
 
     public void listCategories(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        List<Category> listeCategories = repository.findAll();
+        List<Category> listeCategories = repository.getAll();
         req.setAttribute("categories", listeCategories);
         req.getRequestDispatcher("/WEB-INF/views/categories/list.jsp")
                 .forward(req, resp);
@@ -89,19 +95,20 @@ public class CategoryServlet extends HttpServlet {
             throws IOException {
         Category category = new Category();
         extractCategory(req, category);
-        repository.save(category);
+        repository.create(category);
         resp.sendRedirect(req.getContextPath() + "/categories");
     }
 
     public void updateCategory(HttpServletRequest req, HttpServletResponse resp, int id)
             throws IOException {
-        Category category = repository.findById(id);
-        if (category == null) {
+        Category category = new Category();
+        extractCategory(req, category);
+        try {
+            repository.update(id, category);
+        } catch (EntityNotFoundException e) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        extractCategory(req, category);
-        repository.update(category);
         resp.sendRedirect(req.getContextPath() + "/categories");
     }
 
