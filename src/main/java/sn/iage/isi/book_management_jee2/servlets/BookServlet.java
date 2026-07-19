@@ -84,6 +84,9 @@ public class BookServlet extends HttpServlet {
 
     public void showForm(HttpServletRequest req, HttpServletResponse resp, Book book)
             throws ServletException, IOException {
+        if (book.getIsbn() == null || book.getIsbn().isBlank()) {
+            book.setIsbn(repository.generateIsbn());
+        }
         List<Category> categories = categoryRepository.listActiveCategories();
         req.setAttribute("book", book);
         req.setAttribute("categories", categories);

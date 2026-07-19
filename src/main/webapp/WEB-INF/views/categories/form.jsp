@@ -53,7 +53,8 @@
                     <input type="checkbox" class="form-check-input" id="state" name="state"
                            <c:if test="${category.state}">checked</c:if>>
                     <label class="form-check-label" for="state">
-                        <i class="fas fa-circle-dot me-1"></i>Categorie active
+<%--                        <i class="fas fa-circle-dot me-1"></i>--%>
+                        Categorie active
                     </label>
                 </div>
                 <div class="d-flex gap-2">

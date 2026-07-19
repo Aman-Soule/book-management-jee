@@ -42,12 +42,16 @@
             </c:choose>
 
             <form action="${formAction}" method="post">
-                <div class="mb-3">
-                    <label for="isbn" class="form-label">
-                        <i class="fas fa-barcode me-1"></i>ISBN <span class="text-danger">*</span>
-                    </label>
+                <div class="input-group">
                     <input type="text" class="form-control" id="isbn" name="isbn"
-                           value="<c:out value='${book.isbn}'/>" required maxlength="20" autofocus>
+                           value="<c:out value='${book.isbn}'/>" required maxlength="20" autofocus readonly>
+                    <button type="submit" class="btn btn-outline-secondary"
+                            formaction="${pageContext.request.contextPath}/books/regenerate-isbn"
+                            formmethod="post"
+                            formnovalidate
+                            title="Générer un nouvel ISBN">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                 </div>
                 <div class="mb-3">
                     <label for="title" class="form-label">
@@ -109,5 +113,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('btnRegenerateIsbn').addEventListener('click', function () {
+        const btn = this;
+        const icon = btn.querySelector('i');
+        icon.classList.add('fa-spin');
+        btn.disabled = true;
+
+        fetch('${pageContext.request.contextPath}/books/generate-isbn')
+            .then(response => {
+                if (!response.ok) throw new Error('Erreur lors de la génération');
+                return response.text(); // adapter en .json() si l'endpoint renvoie du JSON
+            })
+            .then(newIsbn => {
+                document.getElementById('isbn').value = newIsbn;
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Impossible de générer un nouvel ISBN.");
+            })
+            .finally(() => {
+                icon.classList.remove('fa-spin');
+                btn.disabled = false;
+            });
+    });
+</script>
 </body>
 </html>
