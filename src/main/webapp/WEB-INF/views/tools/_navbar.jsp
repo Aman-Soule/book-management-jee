@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
         <a class="navbar-brand fw-bold" href="${pageContext.request.contextPath}/books">
@@ -9,21 +10,28 @@
                     <i class="fas fa-book me-1"></i>Livres
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/categories">
-                    <i class="fas fa-tags me-1"></i>Categories
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/users">
-                    <i class="fas fa-users me-1"></i>Utilisateurs
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/roles">
-                    <i class="fas fa-shield-halved me-1"></i>Roles
-                </a>
-            </li>
+            <c:if test="${sessionScope.userPermissions.contains('MANAGE_CATEGORIES')}">
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/categories">
+                        <i class="fas fa-tags me-1"></i>Categories
+                    </a>
+                </li>
+            </c:if>
+
+            <c:if test="${sessionScope.userPermissions.contains('MANAGE_USERS')}">
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/users">
+                        <i class="fas fa-users me-1"></i>Utilisateurs
+                    </a>
+                </li>
+            </c:if>
+            <c:if test="${sessionScope.userPermissions.contains('MANAGE_ROLES')}">
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/roles">
+                        <i class="fas fa-shield-halved me-1"></i>Roles
+                    </a>
+                </li>
+            </c:if>
         </ul>
         <ul class="navbar-nav">
             <li class="nav-item">

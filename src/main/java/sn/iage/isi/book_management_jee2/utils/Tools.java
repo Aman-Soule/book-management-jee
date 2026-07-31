@@ -1,5 +1,8 @@
 package sn.iage.isi.book_management_jee2.utils;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 public class Tools {
@@ -32,5 +35,21 @@ public class Tools {
         }
         int remainder = sum % 10;
         return remainder == 0 ? 0 : 10 - remainder;
+    }
+
+    public static String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hex = new StringBuilder();
+            for (byte b : hash) {
+                String h = Integer.toHexString(0xff & b);
+                if (h.length() == 1) hex.append('0');
+                hex.append(h);
+            }
+            return hex.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
