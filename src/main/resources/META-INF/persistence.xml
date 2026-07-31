@@ -9,6 +9,9 @@
 
         <class>sn.iage.isi.book_management_jee2.models.Category</class>
         <class>sn.iage.isi.book_management_jee2.models.Book</class>
+        <class>sn.iage.isi.book_management_jee2.models.Permission</class>
+        <class>sn.iage.isi.book_management_jee2.models.Role</class>
+        <class>sn.iage.isi.book_management_jee2.models.User</class>
 
         <properties>
 
